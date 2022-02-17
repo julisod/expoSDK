@@ -1,44 +1,32 @@
-import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Text, Button, Alert, FlatList } from 'react-native';
-import * as Contacts from 'expo-contacts'; //expo install expo-contacts 
-import { StatusBar } from 'expo-status-bar';
+import { StyleSheet, Text, View } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native'; //npm install @react-navigation/native
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'; //npm install @react-navigation/bottom-tabs
+import { MaterialCommunityIcons, AntDesign } from '@expo/vector-icons';
+//expo install react-native-screens react-native-safe-area-context
 
-export default function App() {
+import Contactpage from './components/Contactpage';
+import TTS from './components/TTS';
 
-  const [contacts, setContacts] = useState([]);
-
-  
-  const getContacts = async () => {
-    console.log("pressed")
-    const { status } = await Contacts.requestPermissionsAsync();
-    if (status === 'granted') {
-      const { data } = await Contacts.getContactsAsync(
-        { fields: [Contacts.Fields.PhoneNumbers] }
-      );
-      if (data.length > 0) {
-        setContacts(data);
-      }
+const screenOptions = ({ route }) => ({
+  tabBarIcon: () => {
+    if (route.name === 'Contacts') {
+      return <AntDesign name="contacts" size={24} color="black" />;
+    } else if (route.name === 'TTS') {
+      return <MaterialCommunityIcons name="text-to-speech" size={24} color="black" />
     }
   }
+});
 
+const Tab = createBottomTabNavigator();
+
+export default function App() {
   return (
-    <View style={styles.container}>
-      <StatusBar style="auto" />
-      <FlatList
-          data={contacts}
-          contentContainerStyle={{ marginTop: 50 }}
-          ListEmptyComponent={<Text>Tap the button to fetch contacts</Text>}
-          keyExtractor={item => item.id.toString()} 
-          renderItem={({item}) =>
-          <View style={{flexDirection: 'row'}}>
-            <Text style={{fontSize:20, fontWeight: "bold"}}> {item.name} {item.phoneNumbers[0].number} </Text>
-          </View>}
-        />
-      <Button
-        onPress={getContacts}
-        title="Get contacts"
-      />
-    </View>
+    <NavigationContainer>
+      <Tab.Navigator screenOptions={screenOptions}>
+        <Tab.Screen name="Contacts" component={Contactpage} />
+        <Tab.Screen name="TTS" component={TTS} />{/* TTS is short for text to speech */}
+      </Tab.Navigator>
+    </NavigationContainer>
   );
 }
 
@@ -48,6 +36,5 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
-    margin: 10
   },
 });
