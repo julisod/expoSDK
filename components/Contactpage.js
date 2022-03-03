@@ -31,7 +31,7 @@ export default function Contactpage() {
           keyExtractor={item => item.id.toString()} 
           renderItem={({item}) =>
           <View style={{flexDirection: 'row'}}>
-            <Text style={{fontSize:20, fontWeight: "bold"}}> {item.name} {item.phoneNumbers[0].number} </Text>
+            <Text style={{fontSize:20, fontWeight: "bold"}}> {item.name} {item.phoneNumbers ? item.phoneNumbers[0].number : ''} </Text>
           </View>}
         />
       <Button
